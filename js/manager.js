@@ -403,54 +403,34 @@ module.exports = function (oAppData) {
 									initials: 'LI',
 									title: 'Meeting Notes',
 									content: 'Pellentesque lobortis, velit eget, est arcu tristique leo',
-									time: '15:00 - 16:00',
-									handler: function() {
-										window.location.hash = 'notes';
-									}
+									time: '15:00 - 16:00'
 								},
 								{
 									id: 'note-2',
 									initials: 'PR',
 									title: 'Project Ideas',
 									content: 'Pelle...',
-									time: '14:30 - 15:30',
-									handler: function() {
-										window.location.hash = 'notes';
-									}
+									time: '14:30 - 15:30'
 								},
 								{
 									id: 'note-3',
 									initials: 'TD',
 									title: 'Todo List',
 									content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-									time: '13:00 - 14:00',
-									handler: function() {
-										window.location.hash = 'notes';
-									}
+									time: '13:00 - 14:00'
 								},
 								{
 									id: 'note-4',
 									initials: 'ID',
 									title: 'Ideas',
 									content: 'Sed do eiusmod tempor incididunt ut labore et dolore magna',
-									time: '12:00 - 13:00',
-									handler: function() {
-										window.location.hash = 'notes';
-									}
+									time: '12:00 - 13:00'
 								}
 							],
 							loading: false,
 							emptyText: 'No notes available',
 							subtitle: '4 notes'
-						},
-						actions: [
-							{
-								text: TextUtils.i18n('NotesWebclient/ACTION_SHOW_NOTES'),
-								handler: function() {
-									window.location.hash = 'notes';
-								}
-							}
-						]
+						}
 					};
 
 					// Calls card

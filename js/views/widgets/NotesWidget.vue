@@ -25,7 +25,7 @@
           v-for="note in data.data.items" 
           :key="note.id" 
           class="note-item" 
-          @click="note.handler"
+          @click="navigateToNotes"
         >
           <div class="note-avatar">
             {{ note.initials }}
@@ -78,13 +78,27 @@ export default {
   },
   methods: {
     addNote() {
-      window.location.hash = 'notes';
+      // Use the same hash format as MailNotesPlugin
+      this.navigateToNotes();
     },
     searchNotes() {
-      window.location.hash = 'notes';
+      this.navigateToNotes();
     },
     maximize() {
-      window.location.hash = 'notes';
+      this.navigateToNotes();
+    },
+    navigateToNotes() {
+      try {
+        const ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js');
+        const { HashModuleName } = ModulesManager.run('MailWebclient', 'getSettings');
+        const accountList = ModulesManager.run('MailWebclient', 'getAccountList');
+        const accountHash = accountList.getDefault().email() ? accountList.getDefault().hash() : accountList.collection()[0]?.hash();
+        const notesHash = `#${HashModuleName || 'mail'}/${accountHash}/Notes`;
+        window.location.hash = notesHash;
+      } catch (error) {
+        // Fallback to simple hash if MailWebclient is not available
+        window.location.hash = 'mail';
+      }
     },
     editNote(note) {
       console.log('Edit note:', note.title);
