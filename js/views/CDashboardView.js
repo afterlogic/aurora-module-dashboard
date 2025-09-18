@@ -34,8 +34,8 @@ function CDashboardView()
 		if (!isUpdating) {
 			isUpdating = true;
 			self.loadRegisteredCards();
-			// Notify Vue component about update
-			App.broadcastEvent('%ModuleName%::UpdateCards', {'Cards': self.cards()});
+		// Notify Vue component about update
+		App.broadcastEvent('DashboardWebclient::UpdateCards', {'Cards': self.cards()});
 			setTimeout(() => {
 				isUpdating = false;
 			}, 100);
@@ -113,6 +113,7 @@ CDashboardView.prototype.loadSampleCards = function()
  */
 CDashboardView.registerCard = function(oCardData)
 {
+	console.log('CDashboardView: registerCard called with:', oCardData);
 	if (oCardData && oCardData.id && oCardData.title) {
 		// Remove existing card with same ID
 		CDashboardView.registeredCards = CDashboardView.registeredCards.filter(function(card) {
@@ -122,13 +123,17 @@ CDashboardView.registerCard = function(oCardData)
 		// Add new card
 		CDashboardView.registeredCards.push(oCardData);
 		
+		console.log('CDashboardView: registered cards now:', CDashboardView.registeredCards);
+		
 		// Broadcast update event
-		App.broadcastEvent('%ModuleName%::UpdateCards', {'Cards': CDashboardView.registeredCards});
+		App.broadcastEvent('DashboardWebclient::UpdateCards', {'Cards': CDashboardView.registeredCards});
 		
 		// Force Vue update if available
 		if (typeof window !== 'undefined' && window.DashboardWebclient && window.DashboardWebclient.forceUpdate) {
 			window.DashboardWebclient.forceUpdate();
 		}
+	} else {
+		console.log('CDashboardView: invalid card data:', oCardData);
 	}
 };
 
@@ -162,12 +167,50 @@ CDashboardView.updateCard = function(sCardId, oNewData)
 	if (oCard) {
 		_.extend(oCard, oNewData);
 		// Broadcast update event
-		App.broadcastEvent('%ModuleName%::UpdateCards', {'Cards': CDashboardView.registeredCards});
+		App.broadcastEvent('DashboardWebclient::UpdateCards', {'Cards': CDashboardView.registeredCards});
 	}
+};
+
+/**
+ * Registers a card component
+ * 
+ * @param {string} sComponentName Component name
+ * @param {Object} oComponent Vue component definition
+ */
+CDashboardView.registerCardComponent = function(sComponentName, oComponent)
+{
+	console.log('CDashboardView: registerCardComponent called with:', sComponentName, oComponent);
+	CDashboardView.registeredComponents[sComponentName] = oComponent;
+	
+	console.log('CDashboardView: registered components now:', CDashboardView.registeredComponents);
+	
+	// Notify Vue component about new component
+	App.broadcastEvent('DashboardWebclient::RegisterComponent', {
+		'ComponentName': sComponentName, 
+		'Component': oComponent
+	});
+};
+
+/**
+ * Unregisters a card component
+ * 
+ * @param {string} sComponentName Component name to remove
+ */
+CDashboardView.unregisterCardComponent = function(sComponentName)
+{
+	delete CDashboardView.registeredComponents[sComponentName];
+	
+	// Notify Vue component about component removal
+	App.broadcastEvent('DashboardWebclient::UnregisterComponent', {
+		'ComponentName': sComponentName
+	});
 };
 
 // Static array to store registered cards
 CDashboardView.registeredCards = [];
+
+// Static object to store registered card components
+CDashboardView.registeredComponents = {};
 
 // Make CDashboardView globally available for Vue component
 if (typeof window !== 'undefined') {

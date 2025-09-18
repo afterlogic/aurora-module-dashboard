@@ -25,17 +25,19 @@ function createPermanentDashboard() {
   if (!container) {
     container = document.createElement('div')
     container.id = 'dashboard_vue_container'
-    container.className = 'screen DashboardContainer'
+    container.className = 'DashboardContainer'
     screensContainer.appendChild(container)
   }
   
   // Mount Vue app
   if (container) {
+    console.log('DashboardWebclient: Mounting Vue app');
     const app = createApp(DashboardView)
     app.mount('#dashboard_vue_container')
     
     // Store app reference globally
     window.DashboardVueApp = app
+    console.log('DashboardWebclient: Vue app mounted, DashboardVueApp:', window.DashboardVueApp);
     
           // Make dashboard functions globally available
           window.DashboardWebclient = {
@@ -79,8 +81,10 @@ function waitForAuroraAndMount() {
   
   const tryMount = () => {
     attempts++
+    console.log('DashboardWebclient: tryMount attempt', attempts);
     
     if (createPermanentDashboard()) {
+      console.log('DashboardWebclient: Successfully mounted on attempt', attempts);
       return
     }
     
