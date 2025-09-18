@@ -66,6 +66,41 @@ html {
 		padding-top: 21px;
 		transition: padding-top 0.3s ease-in-out;
 	}
+	
+	/* Dashboard mask when other screens are active */
+	&.masked {
+		&::before {
+			content: '';
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			backdrop-filter: blur(3px);
+			z-index: 1000;
+			pointer-events: none; /* Allow scroll to pass through */
+			transition: all 0.3s ease;
+		}
+		
+		/* Keep container scrollable but block clicks on content */
+		pointer-events: auto; /* Allow scroll on container */
+		
+		/* Disable text selection */
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		
+		/* Block clicks on all child elements */
+		> * {
+			pointer-events: none;
+		}
+		
+		/* Re-enable scroll events */
+		&::-webkit-scrollbar {
+			pointer-events: auto;
+		}
+	}
 }
 
 .dashboardContent {

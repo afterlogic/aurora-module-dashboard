@@ -531,6 +531,28 @@ module.exports = function (oAppData) {
 							}
 						});
 					});
+					
+					// Dashboard mask management
+					function updateDashboardMask() {
+						const $dashboardContainer = $('.DashboardContainer');
+						if ($dashboardContainer.length === 0) return;
+						
+						const currentHash = window.location.hash;
+						const isDashboardActive = currentHash === '#dashboard' || currentHash === '' || currentHash === '#';
+						
+						if (isDashboardActive) {
+							$dashboardContainer.removeClass('masked');
+						} else {
+							$dashboardContainer.addClass('masked');
+						}
+					}
+					
+					$(window).on('hashchange', function() {
+						setTimeout(updateDashboardMask, 50);
+					});
+					
+					// Initial mask update
+					setTimeout(updateDashboardMask, 100);
 				},
 				getScreens: function () {
 					var oScreens = {};
