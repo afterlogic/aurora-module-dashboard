@@ -8,11 +8,28 @@ module.exports = function (oAppData) {
 		
 		App = require('%PathToCoreWebclientModule%/js/App.js'),
 		ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js'),
+		Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 		
 		Settings = require('modules/%ModuleName%/js/Settings.js')
 	;
 
 	Settings.init(oAppData);
+	
+	// Close Screen Button functionality
+	const oAvailableModules = {
+		'MailWebclient': 'CMailView',
+		'ContactsWebclient': 'CContactsView',
+		'CalendarWebclient': 'CCalendarView',
+		'FilesWebclient': 'CFilesView',
+		'SettingsWebclient': 'CSettingsView',
+		'Tasks': 'CMainView',
+		'NotesWebclient': 'CNotesView',
+		'CallsWebclient': 'CCallsView',
+	};
+
+	function handleCloseButtonClick() {
+		window.location.hash = 'dashboard';
+	}
 	
 	// Load main.js for Vue.js
 	require('modules/%ModuleName%/js/views/main.js');
@@ -517,6 +534,23 @@ module.exports = function (oAppData) {
 					ModulesManager.run('DashboardWebclient', 'registerCard', ['contacts', contactsCardData]);
 					ModulesManager.run('DashboardWebclient', 'registerCard', ['notes', notesCardData]);
 					ModulesManager.run('DashboardWebclient', 'registerCard', ['calls', callsCardData]);
+					
+					// Initialize Close Screen Button
+					const builtButtons = [];
+					Screens.screens.subscribe(function (oScreens) {
+						_.each(oScreens, function (oScreen) {
+							if (
+								oAvailableModules[oScreen.sModuleName] 
+								&& oAvailableModules[oScreen.sModuleName] === oScreen.ViewConstructorName
+								&& !builtButtons.includes(`${oScreen.sModuleName}_${oScreen.ViewConstructorName}`)
+								&& oScreen.$viewDom
+							) {
+								const $button = $('<div class="close-screen-button">').on('click', handleCloseButtonClick);
+								oScreen.$viewDom.append($button);
+								builtButtons.push(`${oScreen.sModuleName}_${oScreen.ViewConstructorName}`);
+							}
+						});
+					});
 				},
 				getScreens: function () {
 					var oScreens = {};

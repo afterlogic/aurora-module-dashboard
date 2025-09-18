@@ -2,6 +2,37 @@ html {
     overflow: hidden;
 }
 
+/* Close Screen Button */
+.close-screen-button {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 23px;
+    top: 30px;
+    cursor: pointer;
+    background-image: url("../../images/modules/DashboardWebclient/close.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: opacity 0.3s ease;
+    
+    &:hover {
+        opacity: 0.7;
+    }
+}
+
+.custom-settings-button {
+    right: 111px !important;
+}
+
+.screen.SettingsLayout .maximize-screen-button {
+    right: 67px !important;
+}
+
+.account-indicator {
+    right: 155px !important;
+}
+
 .DashboardContainer {
 	height: 100%;
 	position: fixed;
