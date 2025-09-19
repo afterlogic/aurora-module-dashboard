@@ -1,8 +1,15 @@
 import { createApp } from 'vue'
 import DashboardView from './DashboardView.vue'
 
+// Import Aurora App module for user check
+const App = require('%PathToCoreWebclientModule%/js/App.js')
+
 // Create and mount dashboard permanently in .screens
 function createPermanentDashboard() {
+  // Check if user is authorized before mounting
+  if (!App.isUserNormalOrTenant()) {
+    return false
+  }
   // Find .screens container - try multiple selectors
   let screensContainer = document.querySelector('.auroraContent > .screens')
   if (!screensContainer) {
@@ -31,29 +38,27 @@ function createPermanentDashboard() {
   
   // Mount Vue app
   if (container) {
-    console.log('DashboardWebclient: Mounting Vue app');
     const app = createApp(DashboardView)
     app.mount('#dashboard_vue_container')
     
     // Store app reference globally
     window.DashboardVueApp = app
-    console.log('DashboardWebclient: Vue app mounted, DashboardVueApp:', window.DashboardVueApp);
     
-          // Make dashboard functions globally available
-          window.DashboardWebclient = {
-            show: () => {
-              container.style.display = 'flex'
-            },
-            hide: () => {
-              container.style.display = 'none'
-            },
-            forceUpdate: () => {
-              // Force Vue component to update by triggering a re-render
-              if (window.DashboardVueApp && window.DashboardVueApp.$forceUpdate) {
-                window.DashboardVueApp.$forceUpdate()
-              }
-            }
-          }
+    // Make dashboard functions globally available
+    window.DashboardWebclient = {
+      show: () => {
+        container.style.display = 'flex'
+      },
+      hide: () => {
+        container.style.display = 'none'
+      },
+      forceUpdate: () => {
+        // Force Vue component to update by triggering a re-render
+        if (window.DashboardVueApp && window.DashboardVueApp.$forceUpdate) {
+          window.DashboardVueApp.$forceUpdate()
+        }
+      }
+    }
     
     return true
   }
@@ -62,6 +67,13 @@ function createPermanentDashboard() {
 
 // Wait for DOM to be ready and Aurora to load
 function waitForAuroraAndMount() {
+  // Check if user is authorized before attempting to mount
+  if (!App.isUserNormalOrTenant()) {
+    // Wait a bit and try again - user might be logging in
+    setTimeout(waitForAuroraAndMount, 1000)
+    return
+  }
+  
   // Try to mount immediately
   if (createPermanentDashboard()) {
     return
@@ -81,10 +93,14 @@ function waitForAuroraAndMount() {
   
   const tryMount = () => {
     attempts++
-    console.log('DashboardWebclient: tryMount attempt', attempts);
+    
+    // Check authorization on each attempt
+    if (!App.isUserNormalOrTenant()) {
+      setTimeout(waitForAuroraAndMount, 1000)
+      return
+    }
     
     if (createPermanentDashboard()) {
-      console.log('DashboardWebclient: Successfully mounted on attempt', attempts);
       return
     }
     
