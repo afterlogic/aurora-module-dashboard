@@ -45,13 +45,8 @@ export default {
   },
   methods: {
     getCardComponent(card) {
-      console.log('DashboardView: getCardComponent called for card:', card);
-      console.log('DashboardView: available cardComponents:', this.cardComponents);
-      console.log('DashboardView: looking for component:', card.component);
-      
       // Check if card has custom component
       if (card.component && this.cardComponents[card.component]) {
-        console.log('DashboardView: found component:', this.cardComponents[card.component]);
         // Ensure component is not reactive
         const component = this.cardComponents[card.component];
         return window.Vue && window.Vue.markRaw ? window.Vue.markRaw(component) : component;
@@ -62,17 +57,14 @@ export default {
       return 'div'; // Fallback to simple div
     },
     registerCardComponent(componentName, component) {
-      console.log('DashboardView: registerCardComponent called with:', componentName, component);
       // Extract the default export if it's a module
       const ComponentToRegister = component.default || component;
-      console.log('DashboardView: ComponentToRegister:', ComponentToRegister);
       // Mark as non-reactive to avoid Vue warnings
       if (window.Vue && window.Vue.markRaw) {
         this.cardComponents[componentName] = window.Vue.markRaw(ComponentToRegister);
       } else {
         this.cardComponents[componentName] = ComponentToRegister;
       }
-      console.log('DashboardView: cardComponents after registration:', this.cardComponents);
       // Also register globally for dynamic components
       if (this.$options.components) {
         this.$options.components[componentName] = window.Vue.markRaw ? window.Vue.markRaw(ComponentToRegister) : ComponentToRegister;
@@ -89,7 +81,6 @@ export default {
         
         // Also load registered components
         if (window.CDashboardView.registeredComponents) {
-          console.log('DashboardView: loading registered components:', window.CDashboardView.registeredComponents);
           Object.keys(window.CDashboardView.registeredComponents).forEach(componentName => {
             this.registerCardComponent(componentName, window.CDashboardView.registeredComponents[componentName]);
           });
@@ -105,7 +96,6 @@ export default {
             
             // Also load registered components
             if (window.CDashboardView.registeredComponents) {
-              console.log('DashboardView: loading registered components:', window.CDashboardView.registeredComponents);
               Object.keys(window.CDashboardView.registeredComponents).forEach(componentName => {
                 this.registerCardComponent(componentName, window.CDashboardView.registeredComponents[componentName]);
               });
@@ -115,7 +105,7 @@ export default {
           if (attempts < maxAttempts) {
             setTimeout(checkCDashboardView, 100);
           } else {
-            console.log('DashboardWebclient: CDashboardView not available after 5 seconds');
+            console.warn('DashboardWebclient: CDashboardView not available after 5 seconds');
           }
         };
         setTimeout(checkCDashboardView, 100);
@@ -124,7 +114,6 @@ export default {
       // Also check again after a longer delay to catch late registrations
       setTimeout(() => {
         if (window.CDashboardView && window.CDashboardView.registeredComponents) {
-          console.log('DashboardView: late check - loading registered components:', window.CDashboardView.registeredComponents);
           Object.keys(window.CDashboardView.registeredComponents).forEach(componentName => {
             if (!this.cardComponents[componentName]) {
               this.registerCardComponent(componentName, window.CDashboardView.registeredComponents[componentName]);
@@ -134,7 +123,6 @@ export default {
       }, 1000);
     },
     updateCards(newCards) {
-      console.log('DashboardView: updateCards called with:', newCards);
       this.cards = newCards || []
       
       // Force update of all child components
@@ -146,11 +134,8 @@ export default {
   mounted() {
     // Wait for App to be available
     const waitForApp = () => {
-      console.log('DashboardView: waitForApp - checking App availability');
       if (window.App && window.App.subscribeEvent) {
-        console.log('DashboardView: App is available, subscribing to events');
         window.App.subscribeEvent('DashboardWebclient::UpdateCards', (params) => {
-          console.log('DashboardView: UpdateCards event received:', params);
           if (params.Cards) {
             this.updateCards(params.Cards)
           }
@@ -158,14 +143,12 @@ export default {
         
         // Subscribe to component registration events
         window.App.subscribeEvent('DashboardWebclient::RegisterComponent', (params) => {
-          console.log('DashboardView: RegisterComponent event received:', params);
           if (params.ComponentName && params.Component) {
             this.registerCardComponent(params.ComponentName, params.Component);
           }
         });
         
         window.App.subscribeEvent('DashboardWebclient::UnregisterComponent', (params) => {
-          console.log('DashboardView: UnregisterComponent event received:', params);
           if (params.ComponentName) {
             delete this.cardComponents[params.ComponentName];
             if (this.$options.components) {
@@ -176,7 +159,6 @@ export default {
         
         return true;
       }
-      console.log('DashboardView: App not available yet');
       return false;
     };
     
@@ -192,8 +174,6 @@ export default {
         }
         if (attempts < maxAttempts) {
           setTimeout(checkApp, 100);
-        } else {
-          console.log('DashboardWebclient: App not available after 5 seconds, using fallback');
         }
       };
       setTimeout(checkApp, 100);

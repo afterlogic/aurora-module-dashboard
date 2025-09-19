@@ -113,7 +113,6 @@ CDashboardView.prototype.loadSampleCards = function()
  */
 CDashboardView.registerCard = function(oCardData)
 {
-	console.log('CDashboardView: registerCard called with:', oCardData);
 	if (oCardData && oCardData.id && oCardData.title) {
 		// Remove existing card with same ID
 		CDashboardView.registeredCards = CDashboardView.registeredCards.filter(function(card) {
@@ -123,8 +122,6 @@ CDashboardView.registerCard = function(oCardData)
 		// Add new card
 		CDashboardView.registeredCards.push(oCardData);
 		
-		console.log('CDashboardView: registered cards now:', CDashboardView.registeredCards);
-		
 		// Broadcast update event
 		App.broadcastEvent('DashboardWebclient::UpdateCards', {'Cards': CDashboardView.registeredCards});
 		
@@ -133,7 +130,7 @@ CDashboardView.registerCard = function(oCardData)
 			window.DashboardWebclient.forceUpdate();
 		}
 	} else {
-		console.log('CDashboardView: invalid card data:', oCardData);
+		console.error('CDashboardView: invalid card data:', oCardData);
 	}
 };
 
@@ -179,10 +176,7 @@ CDashboardView.updateCard = function(sCardId, oNewData)
  */
 CDashboardView.registerCardComponent = function(sComponentName, oComponent)
 {
-	console.log('CDashboardView: registerCardComponent called with:', sComponentName, oComponent);
 	CDashboardView.registeredComponents[sComponentName] = oComponent;
-	
-	console.log('CDashboardView: registered components now:', CDashboardView.registeredComponents);
 	
 	// Notify Vue component about new component
 	App.broadcastEvent('DashboardWebclient::RegisterComponent', {
