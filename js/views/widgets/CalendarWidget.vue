@@ -115,6 +115,7 @@ export default {
   },
   computed: {
     formattedDate() {
+      const CoreSettings = require('%PathToCoreWebclientModule%/js/Settings.js');
       const now = new Date();
       const options = { 
         weekday: 'long', 
@@ -122,7 +123,8 @@ export default {
         month: 'long', 
         day: 'numeric' 
       };
-      return now.toLocaleDateString('ru-RU', options).toUpperCase();
+      const locale = (CoreSettings.ShortLanguage || 'en').toLowerCase();
+      return now.toLocaleDateString(locale, options).toUpperCase();
     }
   },
   methods: {
