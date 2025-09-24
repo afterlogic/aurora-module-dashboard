@@ -26,6 +26,7 @@ module.exports = function (oAppData) {
 		'Tasks': 'CMainView',
 		'NotesWebclient': 'CNotesView',
 		'CallsWebclient': 'CCallsView',
+		'TenantAdminPanelWebclient': 'CMainView',
 	};
 
 	function handleCloseButtonClick() {
@@ -68,6 +69,7 @@ module.exports = function (oAppData) {
 					const builtButtons = [];
 					Screens.screens.subscribe(function (oScreens) {
 						_.each(oScreens, function (oScreen) {
+							console.log(oScreen.sModuleName, oScreen.ViewConstructorName)
 							if (
 								oAvailableModules[oScreen.sModuleName] 
 								&& oAvailableModules[oScreen.sModuleName] === oScreen.ViewConstructorName
