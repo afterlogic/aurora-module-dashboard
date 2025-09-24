@@ -7,6 +7,7 @@ module.exports = function (oAppData) {
 		TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 		
 		App = require('%PathToCoreWebclientModule%/js/App.js'),
+		CoreSettings = require('%PathToCoreWebclientModule%/js/Settings.js'),
 		ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js'),
 		Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 		
@@ -86,7 +87,11 @@ module.exports = function (oAppData) {
 						if ($dashboardContainer.length === 0) return;
 						
 						const currentHash = window.location.hash;
-						const isDashboardActive = currentHash === '#dashboard' || currentHash === '' || currentHash === '#';
+						const dashboardHash = `#${Settings.HashModuleName}`;
+						const isDefaultDashboard = (CoreSettings.DefaultUserScreenHash || '').toLowerCase() === (Settings.HashModuleName || '').toLowerCase();
+						const isDashboardHash = currentHash === dashboardHash || currentHash.indexOf(`${dashboardHash}/`) === 0;
+						const isEmptyHash = currentHash === '' || currentHash === '#';
+						const isDashboardActive = isDashboardHash || (isDefaultDashboard && isEmptyHash);
 						
 						if (isDashboardActive) {
 							$dashboardContainer.removeClass('masked');
