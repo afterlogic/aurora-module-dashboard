@@ -310,6 +310,11 @@ export default {
   color: white;
 }
 
+.checkbox.checked:before {
+  content: "\e61c";
+  font-family: 'afterlogic';
+}
+
 .checkbox i {
   font-size: 10px;
 }
