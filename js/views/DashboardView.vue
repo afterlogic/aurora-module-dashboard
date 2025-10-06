@@ -1,46 +1,46 @@
 <template>
-  <div class="dashboardContent">
-    <div class="dashboardCards" v-if="cards.length > 0">
-      <div 
+  <div class="dashboard-content">
+    <div class="dashboard-cards" v-if="cards.length > 0">
+      <template 
         v-for="card in cards" 
         :key="card.id" 
-        class="dashboardCard" 
-        :class="'card-' + card.type"
       >
-        <!-- <div class="cardHeader">
-        </div> -->
-        <div class="cardContent">
-          <component 
-            :is="getCardComponent(card)" 
-            :data="card"
-            :key="card.id + '-' + (card.data && card.data.items ? card.data.items.length : 0)"
-          />
-        </div>
-      </div>
+        <component
+          :is="getCardComponent(card)"
+          :data="card"
+        />
+      </template>
     </div>
     
-    <div class="dashboardEmpty" v-else>
-      <p>{{ infoNoCards }}</p>
+    <div class="dashboard-empty" v-else>
+      <p>{{ noCardsText }}</p>
     </div>
   </div>
 </template>
 
 <script>
+const TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js')
+
 export default {
   name: 'DashboardView',
   data() {
     return {
       cards: [],
         cardComponents: {
-          CalendarWidget: require('./widgets/CalendarWidget.vue').default,
-          FilesWidget: require('./widgets/FilesWidget.vue').default,
-          TasksWidget: require('./widgets/TasksWidget.vue').default,
-          MailWidget: require('./widgets/MailWidget.vue').default,
-          ContactsWidget: require('./widgets/ContactsWidget.vue').default,
-          NotesWidget: require('./widgets/NotesWidget.vue').default,
-          CallsWidget: require('./widgets/CallsWidget.vue').default
+          // CalendarWidget: require('./widgets/CalendarWidget.vue').default,
+          // FilesWidget: require('./widgets/FilesWidget.vue').default,
+          // TasksWidget: require('./widgets/TasksWidget.vue').default,
+          // MailWidget: require('./widgets/MailWidget.vue').default,
+          // ContactsWidget: require('./widgets/ContactsWidget.vue').default,
+          // NotesWidget: require('./widgets/NotesWidget.vue').default,
+          // CallsWidget: require('./widgets/CallsWidget.vue').default
         }, // Registered card components
       infoNoCards: 'No cards available. Other modules can register their cards here.'
+    }
+  },
+  computed: {
+    noCardsText() {
+      return TextUtils.i18n('%MODULENAME%/INFO_NO_CARDS')
     }
   },
   methods: {
@@ -49,28 +49,25 @@ export default {
       if (card.component && this.cardComponents[card.component]) {
         // Ensure component is not reactive
         const component = this.cardComponents[card.component];
-        return window.Vue && window.Vue.markRaw ? window.Vue.markRaw(component) : component;
+        return window.Vue?.markRaw ? window.Vue.markRaw(component) : component;
       }
       
       // If no custom component is registered, show error
-      console.error('DashboardWebclient: No component found for card:', card);
       return 'div'; // Fallback to simple div
     },
     registerCardComponent(componentName, component) {
       // Extract the default export if it's a module
       const ComponentToRegister = component.default || component;
+      
       // Mark as non-reactive to avoid Vue warnings
-      if (window.Vue && window.Vue.markRaw) {
-        this.cardComponents[componentName] = window.Vue.markRaw(ComponentToRegister);
-      } else {
-        this.cardComponents[componentName] = ComponentToRegister;
-      }
+      this.cardComponents[componentName] = window.Vue?.markRaw ? window.Vue.markRaw(ComponentToRegister) : ComponentToRegister;
+      
       // Also register globally for dynamic components
       if (this.$options.components) {
-        this.$options.components[componentName] = window.Vue.markRaw ? window.Vue.markRaw(ComponentToRegister) : ComponentToRegister;
+        this.$options.components[componentName] = window.Vue?.markRaw ? window.Vue.markRaw(ComponentToRegister) : ComponentToRegister;
       }
       // Register globally in Vue
-      if (window.Vue && window.Vue.component) {
+      if (window.Vue?.component) {
         window.Vue.component(componentName, ComponentToRegister);
       }
     },

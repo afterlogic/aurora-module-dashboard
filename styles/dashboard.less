@@ -33,7 +33,7 @@ html {
     right: 155px !important;
 }
 
-.DashboardContainer {
+.dashboard-container {
 	height: 100%;
 	position: fixed;
 	top: 0;
@@ -103,7 +103,7 @@ html {
 	}
 }
 
-.dashboardContent {
+.dashboard-content {
 	max-width: 1050px;
 	margin: 0 auto;
     padding: 30px;
@@ -112,7 +112,7 @@ html {
 	overflow-x: hidden;
 }
 
-.dashboardCards {
+.dashboard-cards {
 	display: grid;
 	// grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 	grid-template-columns: 1fr 2fr;
@@ -120,7 +120,7 @@ html {
 	margin-bottom: 20px;
 }
 
-.dashboardCard {
+.dashboard-card {
 	height: 315px;
 	background: white;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.302);
@@ -131,19 +131,7 @@ html {
 	box-sizing: border-box;
 }
 
-.cardHeader {
-	padding: 15px 20px;
-	background: #f8f9fa;
-	border-bottom: 1px solid #dee2e6;
-	
-	h3 {
-		margin: 0;
-		color: #333;
-		font-size: 18px;
-	}
-}
-
-.cardContent {
+.card-content {
 	height: 100%;
 	p {
 		margin: 0;
@@ -152,7 +140,7 @@ html {
 	}
 }
 
-.statsContent {
+.stats-content {
 	text-align: center;
 	
 	.stats-value {
@@ -162,7 +150,7 @@ html {
 		margin-bottom: 5px;
 	}
 	
-	.statsLabel {
+	.stats-label {
 		color: #666;
 		font-size: 14px;
 		text-transform: uppercase;
@@ -170,7 +158,7 @@ html {
 	}
 }
 
-.cardActions {
+.card-actions {
 	margin-top: 15px;
 	padding-top: 15px;
 	border-top: 1px solid #eee;
@@ -191,7 +179,7 @@ html {
 	}
 }
 
-.dashboardEmpty {
+.dashboard-empty {
 	text-align: center;
 	padding: 60px 20px;
 	color: #666;
@@ -204,17 +192,17 @@ html {
 
 // Responsive design
 @media (max-width: 768px) {
-	.dashboardContent {
+    .dashboard-content {
 		padding: 15px;
 	}
 	
-	.dashboardCards {
+	.dashboard-cards {
 		grid-template-columns: 1fr;
 		gap: 15px;
 	}
 	
-	.dashboardCard {
-		.cardHeader {
+	.dashboard-card {
+		.card-header {
 			padding: 12px 15px;
 			
 			h3 {
@@ -226,7 +214,7 @@ html {
 
 // Calendar card styles
 .calendar-card {
-	.calendar-header {
+    .calendar-header {
 		padding: 15px 20px;
 		background: #f8f9fa;
 		border-bottom: 1px solid #dee2e6;
@@ -247,7 +235,7 @@ html {
 		}
 	}
 	
-	.calendar-content {
+    .calendar-content {
 		padding: 0;
 	}
 	

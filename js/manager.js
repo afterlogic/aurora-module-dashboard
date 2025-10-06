@@ -57,19 +57,18 @@ module.exports = function (oAppData) {
 					const MockData = require('modules/%ModuleName%/js/MockData.js')(TextUtils);
 					
 					// Register sample cards with mock data
-					ModulesManager.run('DashboardWebclient', 'registerCard', ['calendar', MockData.getCalendarCardData()]);
-					ModulesManager.run('DashboardWebclient', 'registerCard', ['files', MockData.getFilesCardData()]);
-					ModulesManager.run('DashboardWebclient', 'registerCard', ['tasks', MockData.getTasksCardData()]);
-					ModulesManager.run('DashboardWebclient', 'registerCard', ['mail', MockData.getMailCardData()]);
-					ModulesManager.run('DashboardWebclient', 'registerCard', ['contacts', MockData.getContactsCardData()]);
-					ModulesManager.run('DashboardWebclient', 'registerCard', ['notes', MockData.getNotesCardData()]);
-					ModulesManager.run('DashboardWebclient', 'registerCard', ['calls', MockData.getCallsCardData()]);
+					// ModulesManager.run('DashboardWebclient', 'registerCard', ['calendar', MockData.getCalendarCardData()]);
+					// ModulesManager.run('DashboardWebclient', 'registerCard', ['files', MockData.getFilesCardData()]);
+					// ModulesManager.run('DashboardWebclient', 'registerCard', ['tasks', MockData.getTasksCardData()]);
+					// ModulesManager.run('DashboardWebclient', 'registerCard', ['mail', MockData.getMailCardData()]);
+					// ModulesManager.run('DashboardWebclient', 'registerCard', ['contacts', MockData.getContactsCardData()]);
+					// ModulesManager.run('DashboardWebclient', 'registerCard', ['notes', MockData.getNotesCardData()]);
+					// ModulesManager.run('DashboardWebclient', 'registerCard', ['calls', MockData.getCallsCardData()]);
 					
 					// Initialize Close Screen Button
 					const builtButtons = [];
 					Screens.screens.subscribe(function (oScreens) {
 						_.each(oScreens, function (oScreen) {
-							console.log(oScreen.sModuleName, oScreen.ViewConstructorName)
 							if (
 								oAvailableModules[oScreen.sModuleName] 
 								&& oAvailableModules[oScreen.sModuleName] === oScreen.ViewConstructorName
@@ -85,7 +84,7 @@ module.exports = function (oAppData) {
 					
 					// Dashboard mask management
 					function updateDashboardMask() {
-						const $dashboardContainer = $('.DashboardContainer');
+						const $dashboardContainer = $('.dashboard-container');
 						if ($dashboardContainer.length === 0) return;
 						
 						const currentHash = window.location.hash;

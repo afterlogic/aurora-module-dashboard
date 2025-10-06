@@ -58,53 +58,6 @@ CDashboardView.prototype.loadRegisteredCards = function()
 	this.cards(CDashboardView.registeredCards.slice());
 };
 
-/**
- * Loads sample cards if no cards are registered
- */
-CDashboardView.prototype.loadSampleCards = function()
-{
-	if (CDashboardView.registeredCards.length === 0) {
-		CDashboardView.registeredCards = [
-			{
-				id: 'welcome',
-				title: 'Welcome',
-				content: 'This is your personal dashboard. Add cards from other modules to customize your experience.',
-				type: 'default',
-				icon: 'icon-dashboard'
-			},
-			{
-				id: 'stats',
-				title: 'Statistics',
-				type: 'stats',
-				data: {
-					value: 42,
-					label: 'Total Items',
-					change: 12
-				}
-			},
-			{
-				id: 'recent',
-				title: 'Recent Items',
-				type: 'list',
-				data: {
-					items: [
-						'Item 1',
-						'Item 2',
-						'Item 3'
-					]
-				},
-				actions: [
-					{
-						text: 'View All',
-						handler: function() { }
-					}
-				]
-			}
-		];
-		this.loadRegisteredCards();
-	}
-};
-
 
 /**
  * Registers a new dashboard card
@@ -157,15 +110,21 @@ CDashboardView.unregisterCard = function(sCardId)
  */
 CDashboardView.updateCard = function(sCardId, oNewData)
 {
-	var oCard = CDashboardView.registeredCards.find(function(card) {
-		return card.id === sCardId;
-	});
-	
-	if (oCard) {
-		_.extend(oCard, oNewData);
-		// Broadcast update event
-		App.broadcastEvent('DashboardWebclient::UpdateCards', {'Cards': CDashboardView.registeredCards});
-	}
+    var index = CDashboardView.registeredCards.findIndex(function(card) {
+        return card.id === sCardId;
+    });
+    if (index !== -1) {
+        var current = CDashboardView.registeredCards[index] || {};
+        // Create new card object reference
+        var updated = _.extend({}, current, oNewData || {});
+        // If nested data provided, replace with a new object reference too
+        if (oNewData && oNewData.data) {
+            updated.data = _.extend({}, current.data || {}, oNewData.data);
+        }
+        CDashboardView.registeredCards[index] = updated;
+        // Broadcast update event with updated array
+        App.broadcastEvent('DashboardWebclient::UpdateCards', {'Cards': CDashboardView.registeredCards});
+    }
 };
 
 /**
@@ -221,9 +180,6 @@ CDashboardView.prototype.onShow = function()
 
 CDashboardView.prototype.onBind = function()
 {
-	// Load sample cards if no cards are registered
-	this.loadSampleCards();
-	
 	// Vue.js will be mounted automatically via main.js
 };
 

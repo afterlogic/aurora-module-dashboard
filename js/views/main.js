@@ -32,7 +32,7 @@ function createPermanentDashboard() {
   if (!container) {
     container = document.createElement('div')
     container.id = 'dashboard_vue_container'
-    container.className = 'DashboardContainer'
+    container.className = 'dashboard-container'
     screensContainer.appendChild(container)
   }
   
@@ -58,6 +58,25 @@ function createPermanentDashboard() {
           window.DashboardVueApp.$forceUpdate()
         }
       }
+    }
+    
+    // Expose DashboardCard component globally for other modules to use
+    try {
+      const DashboardCard = require('modules/%ModuleName%/js/views/widgets/DashboardWidgetTemplate.vue').default
+      if (DashboardCard) {
+        // register globally in current app
+        if (app && app.component) {
+          app.component('DashboardCard', DashboardCard)
+        }
+        // expose on window so external Vue components can reference via require or window
+        window.DashboardCard = DashboardCard
+        // broadcast availability via App event bus if present
+        if (window.App && window.App.broadcastEvent) {
+          window.App.broadcastEvent('DashboardWebclient::DashboardCardReady', { Component: DashboardCard })
+        }
+      }
+    } catch (e) {
+      console.warn('DashboardWebclient: failed to expose DashboardCard', e)
     }
     
     return true
