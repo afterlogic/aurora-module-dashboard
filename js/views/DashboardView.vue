@@ -7,7 +7,7 @@
       >
         <component
           :is="getCardComponent(card)"
-          :data="card"
+          :config="card"
         />
       </template>
     </div>
